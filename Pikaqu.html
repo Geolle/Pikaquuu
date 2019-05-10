@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pikaquuuuuuuuuuuuuu!</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: Microsoft Yahei;
+            width: 100%;
+            height: 100%;
+            background-image: url("./Pikaqu.jpg");
+            background-position-x: center;
+            background-repeat: no-repeat;
+            margin: 0;
+        }
+
+        .container {
+            width: 700px;
+            height: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: 1481px;
+        }
+
+        .title {
+            text-align: center;
+            color: #333333;
+            margin-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        .option {
+            float: right;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 0px 5px;
+            margin-bottom: 5px;
+        }
+
+        .option span {
+            cursor: pointer;
+            padding: 2px;
+        }
+
+        .option .item.selected {
+            background: red;
+            color: #ffffff;
+        }
+
+        .output {
+            width: 678px;
+            height: 100%;
+            border-radius: 5px;
+            font-family: inherit;
+            float: left;
+            border: solid 1px #f2f2f2f2;
+            padding: 10px 10px;
+            margin-bottom: 10px;
+            color: #333333;
+            background-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 3px 3px 5px #333333;
+
+            /* background: inherit;
+            -webkit-filter: blur(5px);
+            -moz-filter: blur(5px);
+            -ms-filter: blur(5px);
+            -o-filter: blur(5px);
+            filter: blur(1px);
+            filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=4, MakeShadow=false); */
+        }
+
+        .btn-primary {
+            width: 100%;
+            height: 35px;
+            border-radius: 5px;
+            float: right;
+            font: inherit;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: yellow;
+            border: none 1px #f2f2f2f2;
+            box-shadow: 3px 3px 5px #333333;
+            color: #333333;
+            position: relative;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="container">
+        <h1 class="title">Pikaquuuuuuuuuuuuu!</h1>
+        <div class="option">Language：
+            <span class="item" data-value="en">🇺🇸</span>
+            <span class="item selected" data-value="zh">🇨🇳</span></div>
+        <div id="pikapika" rows="20" class="output" contenteditable="true">
+
+        </div>
+        <button id="generate" class="btn-primary">quuuuuuuuuu!</button>
+    </div>
+    <script>
+        var wordDictionary = {
+            zh: ['皮', '皮卡', '皮卡丘', '丘'],
+            en: ['Pi', 'Pika', 'Pikaqu', 'qu']
+        };
+        var nodeDictionary = {
+            zh: ['，', '！', '。', '？', '？！', '～', '～', '...'],
+            en: [', ', '! ', '. ', '? ', '?! ', '~', '~', '...']
+        };
+        var currentWords,currentNodes;
+
+        function Random(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min)
+        }
+
+        function RandomElement(array) {
+            let index = Random(0, array.length - 1);
+            return array[index];
+        }
+
+        $('#generate').on('click', function () {
+            let lan = $('.option>.item.selected').data('value');
+            currentWords = wordDictionary[lan];
+            currentNodes = nodeDictionary[lan];
+            let pikaqu = '';
+            let lastWord = '';
+            let quNum = 0;
+            for (let i = 0; i < 1000; i++) {
+                let word = RandomElement(currentWords);
+                var lastChar = lastWord.split('')[lastWord.split('').length - 1];
+                do {
+                    word = RandomElement(currentWords);
+                } while (lastChar === '丘' && word != '丘');
+                if (word === '丘') {
+                    quNum++;
+                }
+                pikaqu += word;
+                if (Random(0, 10) > 7 || Random(0, 10) <= quNum) {
+                    pikaqu += RandomElement(currentNodes);
+                    lastWord = '';
+                    quNum = 0;
+                } else {
+                    lastWord = word;
+                }
+            }
+            $('#pikapika').html(pikaqu);
+        });
+
+        $('.option>.item').on('click', function () {
+            let $this = $(this);
+            $this.siblings().fadeOut('fast', 'swing', function () {
+                $(this).removeClass('selected');
+                $this.addClass('selected');
+            }).fadeIn();
+        })
+
+    </script>
+</body>
+
+</html>
