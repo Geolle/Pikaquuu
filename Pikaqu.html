@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +27,9 @@
         }
 
         .title {
+            width: 100%;
             text-align: center;
+            display: inline-block;
             color: #333333;
             margin-bottom: 10px;
             margin-top: 30px;
@@ -100,7 +103,6 @@
         <button id="generate" class="btn-primary">quuuuuuuuuu!</button>
     </div>
     <script>
-
         function random(min, max) {
             return Math.floor(Math.random() * (max - min + 1) + min)
         }
@@ -194,7 +196,6 @@
                 $this.addClass('selected');
             }).fadeIn();
         })
-
     </script>
 </body>
 
