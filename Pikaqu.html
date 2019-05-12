@@ -102,96 +102,91 @@
         <button id="generate" class="btn-primary">quuuuuuuuuu!</button>
     </div>
     <script>
-        var wordDictionary = {
-            zh: ['皮', '皮卡', '皮卡丘', '丘'],
-            en: ['Pi', 'Pika', 'Pikaqu', 'qu']
-        };
-        var nodeDictionary = {
-            zh: ['，', '！', '。', '？', '？！', '～', '～', '...'],
-            en: [', ', '! ', '. ', '? ', '?! ', '~', '~', '...']
-        };
-        var currentWords, currentNodes;
-        var pikaqu='';
 
-        function Random(min, max) {
+        function random(min, max) {
             return Math.floor(Math.random() * (max - min + 1) + min)
         }
 
-        function RandomElement(array) {
-            let index = Random(0, array.length - 1);
+        function randomElement(array) {
+            let index = random(0, array.length - 1);
             return array[index];
         }
 
-        function GenerateInChinese() {
-            pikaqu='';
-            currentWords = wordDictionary['zh'];
-            currentNodes = nodeDictionary['zh'];
+        var generator = {
+            'zh': {
+                'wordDic': ['皮', '皮卡', '皮卡丘', '丘'],
+                'nodeDic': ['，', '！', '。', '？', '？！', '～', '～', '...'],
+                'system call, generate pikaqu element, paragraph': function () {
+                    let pikaqu = '';
+                    let currentWords = generator['zh']['wordDic'];
+                    let currentNodes = generator['zh']['nodeDic'];
 
-            let lastWord = '';
-            let quNum = 0;
+                    let lastWord = '';
+                    let quNum = 0;
 
-            for (let i = 0; i < 1000; i++) {
-                let word = RandomElement(currentWords);
-                let lastChar = lastWord.split('')[lastWord.split('').length - 1];
-                let quOdds = Random(0, 5);
-                let reRandomTimes = 0;
-                do {
-                    word = RandomElement(currentWords);
-                    reRandomTimes++;
-                } while ((lastChar === '丘' && word !== '丘') && reRandomTimes <= quOdds);
-                if (word === '丘') {
-                    quNum++;
-                }
-                pikaqu += word;
-                if (Random(0, 10) > 7 || Random(0, 10) <= quNum + 2) {
-                    pikaqu += RandomElement(currentNodes);
-                    lastWord = '';
-                    quNum = 0;
-                } else {
-                    lastWord = word;
-                }
-            }
-        }
-
-        function GenerateInEnglish() {
-            pikaqu='';
-            currentWords = wordDictionary['en'];
-            currentNodes = nodeDictionary['en'];
-            let lastWord = '';
-            let quNum = 0;
-
-            for (let i = 0; i < 1000; i++) {
-                let word = RandomElement(currentWords);
-                var lastChar = lastWord.slice(-2);
-                do {
-                    word = RandomElement(currentWords);
-                } while (lastChar === 'qu' && word !== 'qu');
-                if (word === 'qu') {
-                    quNum++;
-                    if (lastChar === 'qu') {
-                        word = 'u';
+                    for (let i = 0; i < 1000; i++) {
+                        let word = randomElement(currentWords);
+                        let lastChar = lastWord.split('')[lastWord.split('').length - 1];
+                        let quOdds = random(0, 5);
+                        let reRandomTimes = 0;
+                        do {
+                            word = randomElement(currentWords);
+                            reRandomTimes++;
+                        } while ((lastChar === '丘' && word !== '丘') && reRandomTimes <= quOdds);
+                        if (word === '丘') {
+                            quNum++;
+                        }
+                        pikaqu += word;
+                        if (random(0, 10) > 7 || random(0, 10) <= quNum + 2) {
+                            pikaqu += randomElement(currentNodes);
+                            lastWord = '';
+                            quNum = 0;
+                        } else {
+                            lastWord = word;
+                        }
                     }
+                    return pikaqu;
                 }
-                pikaqu += word;
-                if (Random(0, 10) > 7 || Random(0, 10) <= quNum + 2) {
-                    pikaqu += RandomElement(currentNodes);
-                    lastWord = '';
-                    quNum = 0;
-                } else {
-                    lastWord = (word === 'u' ? 'qu' : word);
+            },
+            'en': {
+                'wordDic': ['Pi', 'Pika', 'Pikaqu', 'qu'],
+                'nodeDic': [', ', '! ', '. ', '? ', '?! ', '~', '~', '...'],
+                'system call, generate pikaqu element, paragraph': function () {
+                    let pikaqu = '';
+                    let currentWords = generator['en']['wordDic'];
+                    let currentNodes = generator['en']['nodeDic'];
+                    let lastWord = '';
+                    let quNum = 0;
+
+                    for (let i = 0; i < 1000; i++) {
+                        let word = randomElement(currentWords);
+                        var lastChar = lastWord.slice(-2);
+                        do {
+                            word = randomElement(currentWords);
+                        } while (lastChar === 'qu' && word !== 'qu');
+                        if (word === 'qu') {
+                            quNum++;
+                            if (lastChar === 'qu') {
+                                word = 'u';
+                            }
+                        }
+                        pikaqu += word;
+                        if (random(0, 10) > 7 || random(0, 10) <= quNum) {
+                            pikaqu += randomElement(currentNodes);
+                            lastWord = '';
+                            quNum = 0;
+                        } else {
+                            lastWord = (word === 'u' ? 'qu' : word);
+                        }
+                    }
+                    return pikaqu;
                 }
             }
-        }
+        };
 
         $('#generate').on('click', function () {
             let lan = $('.option>.item.selected').data('value');
-            if (lan === 'zh') {
-                GenerateInChinese();
-            } else if (lan === 'en') {
-                GenerateInEnglish();
-            }
-
-            $('#pikapika').html(pikaqu);
+            $('#pikapika').html(generator[lan]['system call, generate pikaqu element, paragraph']);
         });
 
         $('.option>.item').on('click', function () {
