@@ -110,7 +110,8 @@
             zh: ['，', '！', '。', '？', '？！', '～', '～', '...'],
             en: [', ', '! ', '. ', '? ', '?! ', '~', '~', '...']
         };
-        var currentWords,currentNodes;
+        var currentWords, currentNodes;
+        var pikaqu='';
 
         function Random(min, max) {
             return Math.floor(Math.random() * (max - min + 1) + min)
@@ -121,24 +122,28 @@
             return array[index];
         }
 
-        $('#generate').on('click', function () {
-            let lan = $('.option>.item.selected').data('value');
-            currentWords = wordDictionary[lan];
-            currentNodes = nodeDictionary[lan];
-            let pikaqu = '';
+        function GenerateInChinese() {
+            pikaqu='';
+            currentWords = wordDictionary['zh'];
+            currentNodes = nodeDictionary['zh'];
+
             let lastWord = '';
             let quNum = 0;
+
             for (let i = 0; i < 1000; i++) {
                 let word = RandomElement(currentWords);
-                var lastChar = lastWord.split('')[lastWord.split('').length - 1];
+                let lastChar = lastWord.split('')[lastWord.split('').length - 1];
+                let quOdds = Random(0, 5);
+                let reRandomTimes = 0;
                 do {
                     word = RandomElement(currentWords);
-                } while (lastChar === '丘' && word != '丘');
+                    reRandomTimes++;
+                } while ((lastChar === '丘' && word !== '丘') && reRandomTimes <= quOdds);
                 if (word === '丘') {
                     quNum++;
                 }
                 pikaqu += word;
-                if (Random(0, 10) > 7 || Random(0, 10) <= quNum) {
+                if (Random(0, 10) > 7 || Random(0, 10) <= quNum + 2) {
                     pikaqu += RandomElement(currentNodes);
                     lastWord = '';
                     quNum = 0;
@@ -146,6 +151,46 @@
                     lastWord = word;
                 }
             }
+        }
+
+        function GenerateInEnglish() {
+            pikaqu='';
+            currentWords = wordDictionary['en'];
+            currentNodes = nodeDictionary['en'];
+            let lastWord = '';
+            let quNum = 0;
+
+            for (let i = 0; i < 1000; i++) {
+                let word = RandomElement(currentWords);
+                var lastChar = lastWord.slice(-2);
+                do {
+                    word = RandomElement(currentWords);
+                } while (lastChar === 'qu' && word !== 'qu');
+                if (word === 'qu') {
+                    quNum++;
+                    if (lastChar === 'qu') {
+                        word = 'u';
+                    }
+                }
+                pikaqu += word;
+                if (Random(0, 10) > 7 || Random(0, 10) <= quNum + 2) {
+                    pikaqu += RandomElement(currentNodes);
+                    lastWord = '';
+                    quNum = 0;
+                } else {
+                    lastWord = (word === 'u' ? 'qu' : word);
+                }
+            }
+        }
+
+        $('#generate').on('click', function () {
+            let lan = $('.option>.item.selected').data('value');
+            if (lan === 'zh') {
+                GenerateInChinese();
+            } else if (lan === 'en') {
+                GenerateInEnglish();
+            }
+
             $('#pikapika').html(pikaqu);
         });
 
